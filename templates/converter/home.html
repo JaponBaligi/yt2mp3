@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube to MP3 Converter</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .loading {
+            display: none;
+        }
+        .loading.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-2xl mx-auto">
+            <h1 class="text-4xl font-bold text-center text-gray-800 mb-8">YouTube to MP3 Converter</h1>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="mb-4">
+                    <label for="youtube-url" class="block text-gray-700 text-sm font-bold mb-2">YouTube URL</label>
+                    <input type="text" id="youtube-url" 
+                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                           placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+                
+                <button id="convert-btn" 
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+                    Convert to MP3
+                </button>
+
+                <div id="loading" class="loading mt-4 text-center">
+                    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <p class="mt-2 text-gray-600">Converting... Please wait</p>
+                </div>
+
+                <div id="result" class="mt-4 hidden">
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Success!</strong>
+                        <span class="block sm:inline" id="success-message"></span>
+                    </div>
+                    <a id="download-link" href="#" 
+                       class="mt-4 block text-center bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                        Download MP3
+                    </a>
+                </div>
+
+                <div id="error" class="mt-4 hidden">
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Error!</strong>
+                        <span class="block sm:inline" id="error-message"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('convert-btn').addEventListener('click', async () => {
+            const urlInput = document.getElementById('youtube-url');
+            const loading = document.getElementById('loading');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            const downloadLink = document.getElementById('download-link');
+
+            // Reset UI
+            result.classList.add('hidden');
+            error.classList.add('hidden');
+            loading.classList.add('active');
+
+            try {
+                console.log('Sending URL:', urlInput.value);
+                const response = await fetch('/download/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: urlInput.value }),
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    successMessage.textContent = `Successfully converted: ${data.title}`;
+                    downloadLink.href = `/downloads/${data.filename}`;
+                    result.classList.remove('hidden');
+                } else {
+                    errorMessage.textContent = data.error || 'An error occurred during conversion';
+                    error.classList.remove('hidden');
+                }
+            } catch (err) {
+                errorMessage.textContent = 'An error occurred while processing your request';
+                error.classList.remove('hidden');
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html> 
