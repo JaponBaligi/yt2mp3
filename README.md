@@ -73,39 +73,6 @@ sudo apt install ffmpeg
 brew install ffmpeg
 ```
 
-## Deployment to PythonAnywhere
-
-1. Create a PythonAnywhere account
-2. Upload your code to PythonAnywhere
-3. Create a virtual environment and install dependencies:
-   ```bash
-   mkvirtualenv --python=/usr/bin/python3.9 ytmp3env
-   pip install -r requirements.txt
-   ```
-4. Configure your web app in PythonAnywhere:
-   - Set the virtual environment path
-   - Set the WSGI configuration file
-   - Configure static files
-5. Update the `.env` file with production settings:
-   ```
-   DEBUG=False
-   SECRET_KEY=your-secure-secret-key
-   ALLOWED_HOSTS=your-username.pythonanywhere.com
-   ```
-6. Collect static files:
-   ```bash
-   python manage.py collectstatic
-   ```
-7. Reload your web app
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
 ## Security Considerations
 
 - Keep your SECRET_KEY secure and never commit it to version control
@@ -113,7 +80,3 @@ brew install ffmpeg
 - Regularly update dependencies
 - Monitor disk usage for downloaded files
 - Implement rate limiting if needed
-
-## License
-
-MIT License 
